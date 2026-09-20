@@ -8277,6 +8277,7 @@ dependencies = [
  "uv-python-interpreter",
  "uv-redacted",
  "uv-static",
+ "uv-variants",
  "uv-workspace",
 ]
 
@@ -8286,6 +8287,31 @@ version = "0.0.92"
 dependencies = [
  "nix 0.31.3",
  "thiserror",
+]
+
+[[package]]
+name = "uv-variant-frontend"
+version = "0.0.88"
+dependencies = [
+ "anstream",
+ "anyhow",
+ "fs-err",
+ "indoc",
+ "owo-colors",
+ "rustc-hash",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "tokio",
+ "tracing",
+ "uv-configuration",
+ "uv-distribution-types",
+ "uv-fs",
+ "uv-python",
+ "uv-static",
+ "uv-types",
+ "uv-variants",
+ "uv-virtualenv",
 ]
 
 [[package]]
