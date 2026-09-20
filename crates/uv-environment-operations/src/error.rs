@@ -137,6 +137,9 @@ pub enum EnvironmentError {
     DefaultGroups(#[from] uv_workspace::DefaultGroupsError),
 
     #[error(transparent)]
+    Distribution(#[from] uv_distribution::Error),
+
+    #[error(transparent)]
     ExtraBuildRequires(#[from] uv_distribution_types::ExtraBuildRequiresError),
 
     #[error(transparent)]
@@ -240,6 +243,7 @@ impl From<EnvironmentError> for UvError {
             | EnvironmentError::Metadata(..)
             | EnvironmentError::Lowering(..)
             | EnvironmentError::Workspace(..)
+            | EnvironmentError::Distribution(..)
             | EnvironmentError::DefaultGroups(..)
             | EnvironmentError::ExtraBuildRequires(..)
             | EnvironmentError::Fmt(..)
@@ -261,6 +265,7 @@ impl uv_errors::Hinted for EnvironmentError {
             Self::Resolve(error) => error.hints(),
             Self::Install(error) => error.hints(),
             Self::Client(error) => error.hints(),
+            Self::Distribution(error) => error.hints(),
             Self::Conflict(..)
             | Self::MissingGroupProject(..)
             | Self::MissingGroupProjects(..)
