@@ -770,6 +770,61 @@ mod tests {
     }
 
     #[test]
+    fn pep825_variant_filenames() -> Result<(), Box<dyn std::error::Error>> {
+        let mut labels = Vec::new();
+        for filename in [
+            "numpy-2.3.2-cp313-cp313t-musllinux_1_2_x86_64-x86_64_v3_openblas.whl",
+            "numpy-2.3.2-7-cp313-cp313t-musllinux_1_2_x86_64-x86_64_v3_openblas.whl",
+            "numpy-2.3.2-future99-none-any-null.whl",
+            "numpy-2.3.2-cp312.cp313-none-any-cpu_v3.whl",
+        ] {
+            let wheel = WheelFilename::from_str(filename)?;
+            assert_eq!(wheel.to_string(), filename);
+            labels.push(wheel.variant().map(ToString::to_string));
+        }
+        insta::assert_debug_snapshot!(labels, @r#"
+        [
+            Some(
+                "x86_64_v3_openblas",
+            ),
+            Some(
+                "x86_64_v3_openblas",
+            ),
+            Some(
+                "null",
+            ),
+            Some(
+                "cpu_v3",
+            ),
+        ]
+        "#);
+        Ok(())
+    }
+
+    #[test]
+    fn pep825_invalid_variant_filenames() {
+        let errors = [
+            "numpy-2.3.2-3py-none-any.whl",
+            "numpy-2.3.2-7-3py-none-any-null.whl",
+            "numpy-2.3.2-py3-none-any-.whl",
+            "numpy-2.3.2-py3-none-any-cpu_!v3.whl",
+            "numpy-2.3.2-py3-none-any-cpu_É.whl",
+        ]
+        .map(|filename| WheelFilename::from_str(filename).map_err(|error| error.to_string()));
+        insta::assert_debug_snapshot!(errors);
+    }
+
+    #[test]
+    fn ok_variant_tag() {
+        insta::assert_debug_snapshot!(WheelFilename::from_str(
+            "dummy_project-0.0.1-py3-none-any-36266d4d.whl"
+        ));
+        insta::assert_debug_snapshot!(WheelFilename::from_str(
+            "dummy_project-0.0.1-1234-py3-none-any-36266d4d.whl"
+        ));
+    }
+
+    #[test]
     fn from_and_to_string() {
         let wheel_names = &[
             "django_allauth-0.51.0-py3-none-any.whl",

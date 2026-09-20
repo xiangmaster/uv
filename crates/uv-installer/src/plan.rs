@@ -1,6 +1,7 @@
 use std::fmt;
 use std::path::PathBuf;
 use std::sync::Arc;
+use uv_preview::PreviewFeature;
 
 use owo_colors::OwoColorize;
 use tracing::{debug, warn};
@@ -341,14 +342,12 @@ impl<'a> Planner<'a> {
         //    So, e.g., if a package is marked as `--reinstall`, we _expect_ that it's not passed in
         //    as [`ResolvedDist::Installed`] here.
         for dist in self.resolution.distributions() {
-            // TODO(konsti): Support installing wheel variants.
-            if let Some(filename) = dist.wheel_filename()
-                && filename.variant().is_some()
+            if dist
+                .wheel_filename()
+                .is_some_and(|filename| filename.variant().is_some())
+                && !uv_preview::is_enabled(PreviewFeature::WheelVariants)
             {
-                return Err(uv_distribution::Error::UnsupportedWheelVariant(Box::new(
-                    filename.clone(),
-                ))
-                .into());
+                bail!("Wheel variants require `--preview-features wheel-variants`");
             }
             // Check if the package should be reinstalled.
             let reinstall = reinstall.contains_package(dist.name())
