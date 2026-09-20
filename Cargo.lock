@@ -7808,6 +7808,7 @@ dependencies = [
  "uv-resolver",
  "uv-scripts",
  "uv-types",
+ "uv-variants",
  "uv-warnings",
  "uv-workspace",
 ]
