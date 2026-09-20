@@ -14,6 +14,7 @@ use uv_install_operations::editable::apply_editable_mode;
 use uv_install_operations::loggers::InstallLogger;
 use uv_install_operations::{BytecodeCompilation, Changelog, InstallationPlan};
 use uv_installer::{InstallationStrategy, SitePackages};
+use uv_pep508::MarkerVariantsUniversal;
 use uv_lock::Installable;
 use uv_pep508::{MarkerTree, VersionOrUrl};
 use uv_preview::Preview;
@@ -176,7 +177,7 @@ pub async fn sync_from_lock(
     if !environments.is_empty() {
         if !environments
             .iter()
-            .any(|env| env.evaluate(&marker_env, &[]))
+            .any(|env| env.evaluate(&marker_env, &MarkerVariantsUniversal, &[]))
         {
             return Err(EnvironmentError::LockedPlatformIncompatibility(
                 // For error reporting, we use the "simplified"
