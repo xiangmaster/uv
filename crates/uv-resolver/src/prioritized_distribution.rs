@@ -141,16 +141,6 @@ impl CompatibleDist<'_> {
         }
     }
 
-    /// Return the index URL for the distribution, if any.
-    pub fn index(&self) -> Option<&IndexUrl> {
-        match self {
-            CompatibleDist::InstalledDist(_) => None,
-            CompatibleDist::SourceDist { sdist, .. } => Some(&sdist.index),
-            CompatibleDist::CompatibleWheel { wheel, .. } => Some(&wheel.index),
-            CompatibleDist::IncompatibleWheel { sdist, .. } => Some(&sdist.index),
-        }
-    }
-
     // For installable distributions, return the prioritized distribution it was derived from.
     pub(crate) fn prioritized(&self) -> Option<&PrioritizedDist> {
         match self {
@@ -677,7 +667,7 @@ impl PrioritizedDist {
             })
     }
 
-    pub fn wheels(&self) -> impl Iterator<Item = &(RegistryBuiltWheel, WheelCompatibility)> {
+    fn wheels(&self) -> impl Iterator<Item = &(RegistryBuiltWheel, WheelCompatibility)> {
         self.0.wheels.iter()
     }
 
@@ -852,7 +842,7 @@ impl<'a> CompatibleDist<'a> {
 
 impl WheelCompatibility {
     /// Return `true` if the distribution is compatible.
-    pub fn is_compatible(&self) -> bool {
+    fn is_compatible(&self) -> bool {
         matches!(self, Self::Compatible { .. })
     }
 
