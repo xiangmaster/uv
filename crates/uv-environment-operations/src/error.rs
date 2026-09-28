@@ -137,7 +137,7 @@ pub enum EnvironmentError {
     DefaultGroups(#[from] uv_workspace::DefaultGroupsError),
 
     #[error(transparent)]
-    Distribution(#[from] uv_distribution::Error),
+    Distribution(Box<uv_distribution::Error>),
 
     #[error(transparent)]
     ExtraBuildRequires(#[from] uv_distribution_types::ExtraBuildRequiresError),
@@ -314,5 +314,11 @@ impl From<ScriptRequirementsError> for EnvironmentError {
             ScriptRequirementsError::IndexUrl(error) => Self::IndexUrl(error),
             ScriptRequirementsError::Lowering(error) => Self::Lowering(error),
         }
+    }
+}
+
+impl From<uv_distribution::Error> for EnvironmentError {
+    fn from(error: uv_distribution::Error) -> Self {
+        Self::Distribution(Box::new(error))
     }
 }
