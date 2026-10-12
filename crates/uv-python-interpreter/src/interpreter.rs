@@ -1216,6 +1216,8 @@ impl InterpreterInfo {
                 .collect(),
             stdlib: interpreter.stdlib.clone(),
             extension_suffixes: interpreter.extension_suffixes.clone(),
+            cache_tag: interpreter.cache_tag.clone(),
+            bytecode_magic_number: interpreter.bytecode_magic_number,
             standalone: interpreter.standalone,
             pointer_size: interpreter.pointer_size,
             gil_disabled: interpreter.gil_disabled,
