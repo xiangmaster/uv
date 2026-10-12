@@ -3,8 +3,8 @@ use std::sync::Arc;
 use tokio::sync::mpsc::Sender;
 
 use uv_distribution_types::{
-    Dist, DistributionId, Identifier, IndexMetadata, IndexUrl, Name, ResolutionRecorder,
-    GlobalVersionId, RegistryVariantsJson,
+    Dist, DistributionId, GlobalVersionId, Identifier, IndexMetadata, IndexUrl, Name,
+    RegistryVariantsJson, ResolutionRecorder,
 };
 use uv_normalize::PackageName;
 use uv_once_map::Registration;

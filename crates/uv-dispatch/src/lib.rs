@@ -6,7 +6,7 @@ use std::ffi::{OsStr, OsString};
 use std::future::{self, Future};
 use std::path::Path;
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use futures::FutureExt;
 use itertools::Itertools;
 use rustc_hash::FxHashMap;
@@ -31,6 +31,7 @@ use uv_distribution_types::{
 };
 use uv_git::GitResolver;
 use uv_installer::{InstallationStrategy, Installer, Plan, Planner, Preparer, SitePackages};
+use uv_pep508::MarkerVariantsUniversal;
 use uv_preview::Preview;
 use uv_pypi_types::Conflicts;
 use uv_python_interpreter::{Interpreter, PythonEnvironment};
@@ -380,7 +381,11 @@ impl BuildContext for BuildDispatch<'_> {
         let tags = self.interpreter.tags()?;
 
         let active_requirements = requirements.iter().filter(|requirement| {
-            requirement.evaluate_markers(Some(self.interpreter.markers()), &[])
+            requirement.evaluate_markers(
+                Some(self.interpreter.markers()),
+                &MarkerVariantsUniversal,
+                &[],
+            )
         });
         let previous_hasher = hash_override;
         let hasher = match previous_hasher {
@@ -763,7 +768,7 @@ impl BuildContext for BuildDispatch<'_> {
         // Provider requirements can refer back to packages whose metadata is still being
         // resolved. Separate in-flight caches let the build stack detect recursive providers
         // without waiting for the parent resolution.
-        let build_context = self.fork(self.hasher);
+        let build_context = self.fork(self.base_hasher);
         let builder = VariantBuild::setup(
             backend_name,
             backend,

@@ -29,7 +29,7 @@ use uv_static::EnvVars;
 use uv_types::{BuildContext, BuildStack, VariantsTrait};
 use uv_variants::VariantProviderOutput;
 use uv_variants::variants_json::Provider;
-use uv_virtualenv::{OnExisting, Seed};
+use uv_virtualenv::{OnExisting, Seed, UpgradePolicy};
 
 pub struct VariantBuild {
     temp_dir: TempDir,
@@ -93,7 +93,7 @@ impl VariantBuild {
                 OnExisting::Fail,
                 false,
                 Seed::Disabled,
-                false,
+                UpgradePolicy::Fixed,
             )?;
 
             let requirements = backend
@@ -105,7 +105,7 @@ impl VariantBuild {
                 .map(Requirement::from)
                 .collect::<Vec<_>>();
             let resolved_requirements = build_context
-                .resolve(&requirements, build_stack)
+                .resolve(&requirements, None, build_stack)
                 .await
                 .map_err(|err| {
                     Error::RequirementsResolve("`variant.providers.requires`", err.into())

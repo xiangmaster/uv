@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use anyhow::{Context, Error, Result, ensure};
+use anyhow::{Context, Result, ensure};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use rustc_hash::FxHashMap;
 use tokio::sync::oneshot;

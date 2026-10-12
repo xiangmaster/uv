@@ -21,7 +21,7 @@ use uv_installer::SitePackages;
 use uv_normalize::PackageName;
 use uv_pep440::{Operator, Version, VersionSpecifier, VersionSpecifiers};
 use uv_pep508::{Requirement, VersionOrUrl};
-use uv_pypi_types::{ResolutionMetadata, ResolverMarkerEnvironment, VerbatimParsedUrl};
+use uv_pypi_types::{ResolutionMetadata, VerbatimParsedUrl};
 use uv_python_discovery::find_environment;
 use uv_python_types::{EnvironmentPreference, PythonArchitecture, PythonPreference, PythonRequest};
 use uv_resolver::{ExcludeNewer, Prerelease};

@@ -10,8 +10,8 @@ use uv_cache_key::cache_digest;
 use uv_normalize::{InvalidNameError, PackageName};
 use uv_pep440::{Version, VersionParseError};
 use uv_platform_tags::{
-    AbiTag, IncompatibleTag, LanguageTag, ParseAbiTagError, ParseLanguageTagError,
-    ParsePlatformTagError, PlatformTag, TagCompatibility, Tags,
+    AbiTag, LanguageTag, ParseAbiTagError, ParseLanguageTagError, ParsePlatformTagError,
+    PlatformTag, TagCompatibility, Tags,
 };
 
 use crate::splitter::MemchrSplitter;
@@ -103,16 +103,11 @@ impl WheelFilename {
 
     /// Returns `true` if the wheel is compatible with the given tags.
     pub fn is_compatible(&self, compatible_tags: &Tags) -> bool {
-        // TODO(konsti): Check variant compatibility.
-        self.variant().is_none() && compatible_tags.is_compatible(self.tags.compressed_tags())
+        compatible_tags.is_compatible(self.tags.compressed_tags())
     }
 
     /// Return the [`TagCompatibility`] of the wheel with the given tags
     pub fn compatibility(&self, compatible_tags: &Tags) -> TagCompatibility {
-        // TODO(konsti): Check variant compatibility.
-        if self.variant().is_some() {
-            return TagCompatibility::Incompatible(IncompatibleTag::Variant);
-        }
         self.tags.compatibility(compatible_tags)
     }
 
@@ -767,61 +762,6 @@ mod tests {
             ),
         ]
         "#);
-    }
-
-    #[test]
-    fn pep825_variant_filenames() -> Result<(), Box<dyn std::error::Error>> {
-        let mut labels = Vec::new();
-        for filename in [
-            "numpy-2.3.2-cp313-cp313t-musllinux_1_2_x86_64-x86_64_v3_openblas.whl",
-            "numpy-2.3.2-7-cp313-cp313t-musllinux_1_2_x86_64-x86_64_v3_openblas.whl",
-            "numpy-2.3.2-future99-none-any-null.whl",
-            "numpy-2.3.2-cp312.cp313-none-any-cpu_v3.whl",
-        ] {
-            let wheel = WheelFilename::from_str(filename)?;
-            assert_eq!(wheel.to_string(), filename);
-            labels.push(wheel.variant().map(ToString::to_string));
-        }
-        insta::assert_debug_snapshot!(labels, @r#"
-        [
-            Some(
-                "x86_64_v3_openblas",
-            ),
-            Some(
-                "x86_64_v3_openblas",
-            ),
-            Some(
-                "null",
-            ),
-            Some(
-                "cpu_v3",
-            ),
-        ]
-        "#);
-        Ok(())
-    }
-
-    #[test]
-    fn pep825_invalid_variant_filenames() {
-        let errors = [
-            "numpy-2.3.2-3py-none-any.whl",
-            "numpy-2.3.2-7-3py-none-any-null.whl",
-            "numpy-2.3.2-py3-none-any-.whl",
-            "numpy-2.3.2-py3-none-any-cpu_!v3.whl",
-            "numpy-2.3.2-py3-none-any-cpu_É.whl",
-        ]
-        .map(|filename| WheelFilename::from_str(filename).map_err(|error| error.to_string()));
-        insta::assert_debug_snapshot!(errors);
-    }
-
-    #[test]
-    fn ok_variant_tag() {
-        insta::assert_debug_snapshot!(WheelFilename::from_str(
-            "dummy_project-0.0.1-py3-none-any-36266d4d.whl"
-        ));
-        insta::assert_debug_snapshot!(WheelFilename::from_str(
-            "dummy_project-0.0.1-1234-py3-none-any-36266d4d.whl"
-        ));
     }
 
     #[test]

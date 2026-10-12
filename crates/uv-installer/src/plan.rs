@@ -9,7 +9,8 @@ use uv_cache::{Cache, CacheBucket, WheelCache};
 use uv_cache_info::Timestamp;
 use uv_configuration::{BuildOptions, Reinstall};
 use uv_distribution::{
-    BuiltWheelIndex, HttpArchivePointer, PathArchivePointer, RegistryWheelIndex,
+    BuiltWheelIndex, Error as DistributionError, HttpArchivePointer, PathArchivePointer,
+    RegistryWheelIndex,
 };
 use uv_distribution_filename::WheelFilename;
 use uv_distribution_types::{
@@ -47,7 +48,9 @@ pub enum PlanError {
     #[error(transparent)]
     DistributionTypes(#[from] Error),
     #[error(transparent)]
-    Distribution(#[from] uv_distribution::Error),
+    Distribution(#[from] DistributionError),
+    #[error(transparent)]
+    InstalledDist(#[from] InstalledDistError),
 }
 
 impl uv_errors::Hinted for PlanError {
@@ -59,6 +62,7 @@ impl uv_errors::Hinted for PlanError {
             | Self::NoBinaryUrl(_)
             | Self::NoBinaryPath(_)
             | Self::NoBinaryGitPath(_)
+            | Self::InstalledDist(_)
             | Self::DistributionTypes(_) => uv_errors::Hints::none(),
         }
     }
@@ -348,7 +352,7 @@ impl<'a> Planner<'a> {
                 .is_some_and(|filename| filename.variant().is_some())
                 && !uv_preview::is_enabled(PreviewFeature::WheelVariants)
             {
-                bail!("Wheel variants require `--preview-features wheel-variants`");
+                return Err(DistributionError::WheelVariantsPreview.into());
             }
             // Check if the package should be reinstalled.
             let reinstall = reinstall.contains_package(dist.name())
@@ -829,7 +833,7 @@ fn installed_variant_matches(
     dist: &ResolvedDist,
     installed: &InstalledDist,
     markers: &MarkerEnvironment,
-) -> Result<bool> {
+) -> Result<bool, InstalledDistError> {
     let ResolvedDist::Installable { .. } = dist else {
         return Ok(true);
     };
@@ -837,22 +841,20 @@ fn installed_variant_matches(
         .wheel_filename()
         .filter(|filename| filename.variant().is_some())
     else {
-        return Ok(
-            installed.recorded_variant_context_matches(&VariantWithLabel::default(), markers)?
-        );
+        return installed.recorded_variant_context_matches(&VariantWithLabel::default(), markers);
     };
     if let Some(selected) = resolution.variant_context(filename) {
-        return Ok(installed.recorded_variant_context_matches(selected, markers)?);
+        return installed.recorded_variant_context_matches(selected, markers);
     }
     let selected = match installed.read_variant_context(markers) {
         Ok(selected) => selected,
         Err(InstalledDistError::VariantIncompatible(_)) => return Ok(false),
-        Err(err) => return Err(err.into()),
+        Err(err) => return Err(err),
     };
     if selected.label.as_ref() != filename.variant() {
         return Ok(false);
     }
-    Ok(installed.recorded_variant_context_matches(&selected, markers)?)
+    installed.recorded_variant_context_matches(&selected, markers)
 }
 
 /// Returns `true` if the given distribution is a seed package.

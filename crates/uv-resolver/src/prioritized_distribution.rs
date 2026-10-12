@@ -6,8 +6,8 @@ use tracing::debug;
 
 use uv_distribution_filename::{BuildTag, WheelFilename};
 use uv_distribution_types::{
-    File, InstalledDist, MinimumLibcVersion, Name, RegistryBuiltDist, RegistryBuiltWheel,
-    RegistrySourceDist, RequiresPython,
+    File, IndexUrl, InstalledDist, MinimumLibcVersion, Name, RegistryBuiltDist, RegistryBuiltWheel,
+    RegistrySourceDist, RegistryVariantsJson, RequiresPython,
 };
 use uv_normalize::PackageName;
 use uv_pep440::{Version, VersionSpecifier, VersionSpecifiers};
@@ -21,7 +21,6 @@ use uv_variants::resolved_variants::{ResolvedVariants, VariantScore};
 
 use crate::known_platform::KnownPlatform;
 use crate::resolved::ResolvedDistRef;
-use uv_distribution_types::{IndexUrl, RegistryVariantsJson};
 
 /// A collection of distributions that have been filtered by relevance.
 #[derive(Debug, Default, Clone)]
@@ -449,16 +448,20 @@ impl PrioritizedDist {
         if !compatibility.is_excluded() {
             self.0.hashes.extend(hashes);
         }
-        // Track the highest-priority wheel. Variant wheels cannot provide metadata, so prefer
-        // ordinary wheels even when they cannot be installed (e.g., with `--no-binary`).
+        // Track the highest-priority wheel. When neither wheel can be installed, prefer an
+        // ordinary wheel for source-distribution metadata, including with `--no-binary`.
         if let Some((existing_wheel, existing_compatibility)) = self.best_wheel() {
             let is_more_compatible =
-                match (dist.filename.variant(), existing_wheel.filename.variant()) {
-                    (None, Some(_)) => true,
-                    (Some(_), None) => false,
-                    (None, None) | (Some(_), Some(_)) => {
-                        compatibility.is_more_compatible(existing_compatibility)
+                if !compatibility.is_compatible() && !existing_compatibility.is_compatible() {
+                    match (dist.filename.variant(), existing_wheel.filename.variant()) {
+                        (None, Some(_)) => true,
+                        (Some(_), None) => false,
+                        (None, None) | (Some(_), Some(_)) => {
+                            compatibility.is_more_compatible(existing_compatibility)
+                        }
                     }
+                } else {
+                    compatibility.is_more_compatible(existing_compatibility)
                 };
             if is_more_compatible {
                 self.0.best_wheel_index = Some(self.0.wheels.len());
@@ -569,7 +572,7 @@ impl PrioritizedDist {
             // using the wheel is faster.
             //
             // (If the incompatible wheel should actually be ignored entirely, fall through to
-            // using the source distribution. Variant wheels are not supported yet.)
+            // using the source distribution. Incompatible variants cannot provide its metadata.)
             (
                 Some((wheel, compatibility @ WheelCompatibility::Incompatible(_))),
                 Some((sdist, SourceDistCompatibility::Compatible(_))),

@@ -223,7 +223,7 @@ fn wheel_variants_preview_outdated() -> Result<()> {
     []
 
     ----- stderr -----
-    warning: example-1.0.0-py3-none-any.whl is missing an upload date, but user provided: 2024-03-25T00:00:00Z
+    warning: `example-1.0.0-py3-none-any.whl` is missing an upload date, but user provided: 2024-03-25T00:00:00Z
     "###);
     uv_snapshot!(context.filters(), context.pip_list().arg("--outdated").arg("--format=json")
         .arg("--preview-features").arg("wheel-variants")
@@ -233,8 +233,8 @@ fn wheel_variants_preview_outdated() -> Result<()> {
     [{"name":"example","version":"1.0.0","latest_version":"2.0.0","latest_filetype":"wheel"}]
 
     ----- stderr -----
-    warning: example-1.0.0-py3-none-any.whl is missing an upload date, but user provided: 2024-03-25T00:00:00Z
-    warning: example-2.0.0-py3-none-any-null.whl is missing an upload date, but user provided: 2024-03-25T00:00:00Z
+    warning: `example-1.0.0-py3-none-any.whl` is missing an upload date, but user provided: 2024-03-25T00:00:00Z
+    warning: `example-2.0.0-py3-none-any-null.whl` is missing an upload date, but user provided: 2024-03-25T00:00:00Z
     "###);
     Ok(())
 }

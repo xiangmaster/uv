@@ -11,13 +11,13 @@ use uv_client::{
 use uv_configuration::BuildOptions;
 use uv_distribution_filename::{DistFilename, SourceDistFilename, WheelFilename};
 use uv_distribution_types::{
-    File, Index, IndexLocations, IndexUrl, MinimumLibcVersion, RegistryBuiltWheel,
-    RegistrySourceDist,
-    IndexEntryFilename, RegistryVariantsJson,
+    File, Index, IndexEntryFilename, IndexLocations, IndexUrl, MinimumLibcVersion,
+    RegistryBuiltWheel, RegistrySourceDist, RegistryVariantsJson,
 };
 use uv_normalize::PackageName;
 use uv_pep440::Version;
 use uv_platform_tags::{TagCompatibility, Tags};
+use uv_preview::PreviewFeature;
 use uv_pypi_types::HashDigest;
 use uv_types::HashStrategy;
 use uv_variants::VariantPriority;
@@ -241,12 +241,6 @@ impl FlatDistributions {
         hasher: &HashStrategy,
         build_options: &BuildOptions,
     ) -> WheelCompatibility {
-        // TODO(konsti): Check variant compatibility for flat-index wheels.
-        if filename.variant().is_some() {
-            return WheelCompatibility::Incompatible(IncompatibleWheel::Tag(
-                IncompatibleTag::Variant,
-            ));
-        }
         // Check if binaries are allowed for this package.
         if build_options.no_binary_package(&filename.name) {
             return WheelCompatibility::Incompatible(IncompatibleWheel::NoBinary);

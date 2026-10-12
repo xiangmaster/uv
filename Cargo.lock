@@ -6560,6 +6560,7 @@ dependencies = [
  "uv-git",
  "uv-install-wheel",
  "uv-installer",
+ "uv-pep508",
  "uv-platform-tags",
  "uv-preview",
  "uv-pypi-types",
@@ -7324,6 +7325,7 @@ dependencies = [
  "uv-tool",
  "uv-torch",
  "uv-types",
+ "uv-variants",
  "uv-warnings",
  "uv-workspace",
 ]
@@ -7884,6 +7886,7 @@ dependencies = [
  "uv-pep440",
  "uv-pep508",
  "uv-platform-tags",
+ "uv-preview",
  "uv-pypi-types",
  "uv-python-interpreter",
  "uv-python-types",
@@ -8313,7 +8316,7 @@ dependencies = [
 
 [[package]]
 name = "uv-variant-frontend"
-version = "0.0.88"
+version = "0.0.92"
 dependencies = [
  "anstream",
  "anyhow",
@@ -8329,7 +8332,7 @@ dependencies = [
  "uv-configuration",
  "uv-distribution-types",
  "uv-fs",
- "uv-python",
+ "uv-python-interpreter",
  "uv-static",
  "uv-types",
  "uv-variants",
@@ -8338,7 +8341,7 @@ dependencies = [
 
 [[package]]
 name = "uv-variants"
-version = "0.0.88"
+version = "0.0.92"
 dependencies = [
  "indexmap",
  "insta",
