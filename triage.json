@@ -1,0 +1,51 @@
+{
+  "related": {
+    "items": [
+      {
+        "kind": "issue",
+        "number": 21305,
+        "title": "Allow for workspace members outside of workspace root",
+        "url": "https://github.com/astral-sh/uv/issues/21305",
+        "state": "open",
+        "reason": "Closest capability discussion: both involve workspace layouts spanning separate roots, but this issue's reproduction uses a member outside one root rather than a member shared by two roots."
+      },
+      {
+        "kind": "issue",
+        "number": 13298,
+        "title": "Are doubly-nested packages supported in a workspace?",
+        "url": "https://github.com/astral-sh/uv/issues/13298",
+        "state": "open",
+        "reason": "Related workspace-discovery boundary involving nested projects, but it concerns one workspace and explicitly differs from shared workspace roots."
+      },
+      {
+        "kind": "issue",
+        "number": 16640,
+        "title": "uv fails to find workspace root for nested packages",
+        "url": "https://github.com/astral-sh/uv/issues/16640",
+        "state": "open",
+        "reason": "Related nested-package discovery behavior, but it does not establish support for sharing workspace roots."
+      },
+      {
+        "kind": "issue",
+        "number": 19916,
+        "title": "Regression in workspace source override between uv 0.11.19 and 0.11.20",
+        "url": "https://github.com/astral-sh/uv/issues/19916",
+        "state": "closed",
+        "reason": "Inspected as a version-specific workspace-resolution candidate; it concerns an intermediate pyproject.toml and source overrides, with different behavior and versions."
+      },
+      {
+        "kind": "pull_request",
+        "number": 19926,
+        "title": "Treat workspace members with an intermediate pyproject.toml as standalone",
+        "url": "https://github.com/astral-sh/uv/pull/19926",
+        "state": "merged",
+        "reason": "Fixes astral-sh/uv#19916 by restoring intermediate-pyproject.toml handling; it does not add shared or nested workspace-root support."
+      }
+    ],
+    "search_scope": "Searched all open and closed issues and all open, closed, and merged pull requests in xiangmaster/uv. Literal searches covered workspace member, uv sync, shared workspace, resolve workspace, the exact error fragment, and 0.9.20. Conceptual searches covered nested workspaces, multiple workspace roots, workspace discovery, workspace member paths, external workspaces, and members outside the workspace root. Fix-oriented searches covered closed workspace-resolution issues and merged fixes, including version-specific source-override and intermediate-pyproject cases. The checkout contains only issues xiangmaster/uv#1, xiangmaster/uv#2, and xiangmaster/uv#3, with no pull requests; #1 concerns proxy concurrency and #2 concerns git workspace lock hashes, so both were ruled out. Upstream workspace discussions were inspected for the closest topology and discovery matches."
+  },
+  "type": "enhancement",
+  "type_reason": "The report implies a request for support of a shared or nested workspace-root topology. The source explicitly rejects nested workspaces, while external workspace dependencies via a path to the other workspace root are supported and tested. Because the report lacks the relevant pyproject.toml files and does not establish mishandling of a supported layout or a regression, this is best classified as an enhancement.",
+  "summary": "No exact related item was found in xiangmaster/uv. The closest upstream discussions are astral-sh/uv#21305 on members outside a workspace root and astral-sh/uv#13298 and astral-sh/uv#16640 on nested workspace discovery; astral-sh/uv#19916 and astral-sh/uv#19926 were inspected and ruled out as a distinct intermediate-pyproject regression.",
+  "draft_response": "Thanks for the report. uv does not currently support using a workspace root as a nested member of another workspace. If one project needs a package from another workspace, use a workspace source pointing to the other workspace root, such as pkg = { workspace = \"../other-workspace\" }, rather than making that root a member.\n\nIf this is a different layout, please provide the relevant pyproject.toml files for both roots and the member, the complete uv sync --locked -v output, and the lockfile with private URLs or credentials removed. That will clarify whether this is the unsupported nested-workspace case or a separate resolution bug."
+}
