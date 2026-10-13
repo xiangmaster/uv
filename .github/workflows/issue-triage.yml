@@ -23,7 +23,7 @@ jobs:
     environment: automations
     timeout-minutes: 10
     permissions:
-      contents: read
+      contents: write # fork: substitutes the upstream STS-brokered contents:write token
       id-token: write # for the cross-repository issue-context credential broker
       issues: read
     outputs:
