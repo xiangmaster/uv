@@ -71,12 +71,8 @@ jobs:
           git remote add origin \
             "https://x-access-token:${GH_TOKEN}@github.com/xiangmaster/uv.git"
 
-          gh issue develop "$issue_number" \
-            --repo "$GITHUB_REPOSITORY" \
-            --branch-repo xiangmaster/uv \
-            --base issue/base \
-            --name "$branch" \
-            --checkout
+          git fetch --quiet origin refs/heads/issue/base
+          git checkout --quiet -b "$branch" FETCH_HEAD
 
           if [ -f README.md ]; then
             echo "The existing issue context has already been initialized."
