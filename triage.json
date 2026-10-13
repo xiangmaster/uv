@@ -1,0 +1,19 @@
+{
+  "related": {
+    "items": [
+      {
+        "kind": "issue",
+        "number": 4,
+        "title": "Probe event trigger",
+        "url": "https://github.com/xiangmaster/uv/issues/4",
+        "state": "open",
+        "reason": "The only close textual match: another open probe-style issue with a one-word body. It has no comments, references, or uv behavior, so it is adjacent context rather than the same underlying request."
+      }
+    ],
+    "search_scope": "Searched literal terms “control,” “probe,” “fork,” and the exact title across open and closed issues and pull requests. Conceptual searches covered event/automation triggers, control or smoke tests, and repository forks. No pull requests were found; merged-only search was also attempted but rate-limited. Inspected xiangmaster/uv#4 and ruled out the other open issues as unrelated."
+  },
+  "type": "question",
+  "type_reason": "The report contains only a title and the one-word body “control.” It does not establish incorrect behavior, request functionality, or identify a duplicate. Question is the least assumptive classification pending actionable details.",
+  "summary": "No meaningful duplicate, bug, enhancement, or fixing pull request was found. xiangmaster/uv#4 is the only adjacent result, but it is another unsubstantive probe-style issue rather than the same request.",
+  "draft_response": "Hi @xiang-super — could you add the behavior you’re reporting or the capability you’d like uv to provide? The current title and one-word body do not identify a command, expected result, actual result, or reproducible problem, so there isn’t enough information to investigate or classify this as a bug or enhancement."
+}
