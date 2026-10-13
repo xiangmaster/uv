@@ -1,0 +1,67 @@
+{
+  "related": {
+    "items": [
+      {
+        "kind": "issue",
+        "number": 8887,
+        "title": "uv add workspace fails misteriously from git but not locally",
+        "url": "https://github.com/astral-sh/uv/issues/8887",
+        "state": "closed",
+        "reason": "Same Git-backed workspace trigger, but its symptom was conflicting or invalid lockfiles from cache-local directory URLs."
+      },
+      {
+        "kind": "pull_request",
+        "number": 9388,
+        "title": "Include Git member information when getting metadata from cache",
+        "url": "https://github.com/astral-sh/uv/pull/9388",
+        "state": "merged",
+        "reason": "Fixes astral-sh/uv#8887 by preserving Git member source identity; it does not establish a fix for cross-machine hash differences."
+      },
+      {
+        "kind": "issue",
+        "number": 19152,
+        "title": "`uv lock` with transitive poetry path depedencies results in machine-specific path in lockfile",
+        "url": "https://github.com/astral-sh/uv/issues/19152",
+        "state": "closed",
+        "reason": "Same lockfile portability concern, but it involved a transitive Poetry path dependency inside a Git checkout."
+      },
+      {
+        "kind": "pull_request",
+        "number": 19269,
+        "title": "Fix transitive Git path dependencies in lockfiles",
+        "url": "https://github.com/astral-sh/uv/pull/19269",
+        "state": "merged",
+        "reason": "Fixes astral-sh/uv#19152 by preserving Git source identity instead of serializing an absolute checkout path."
+      },
+      {
+        "kind": "issue",
+        "number": 14954,
+        "title": "uv lock --upgrade-package doesn't update git commit hash for individual subdirectory dependencies from the same repository",
+        "url": "https://github.com/astral-sh/uv/issues/14954",
+        "state": "open",
+        "reason": "Related Git subdirectory commit-hash behavior, but concerns selective upgrade semantics rather than machine-to-machine divergence under `--locked`."
+      },
+      {
+        "kind": "issue",
+        "number": 13707,
+        "title": "uv lock keeps trailing `/` on Linux, but omits on macOS",
+        "url": "https://github.com/astral-sh/uv/issues/13707",
+        "state": "closed",
+        "reason": "Closest cross-machine lockfile-drift report, but it was caused by registry URL trailing-slash differences, not Git workspace handling."
+      },
+      {
+        "kind": "pull_request",
+        "number": 14245,
+        "title": "Normalize index URLs to remove trailing slash",
+        "url": "https://github.com/astral-sh/uv/pull/14245",
+        "state": "merged",
+        "reason": "Fixes astral-sh/uv#13707 through registry URL normalization; it does not address Git workspace hash divergence."
+      }
+    ],
+    "search_scope": "Searched xiangmaster/uv's open and closed issues and open and closed pull requests separately. Literal searches covered `hash differs`, `different hashes`, `across machines`, `git+https`, `--locked`, `git workspace`, and `workspace dependency`; conceptual searches covered lockfile reproducibility, Git/VCS revisions, Git subdirectories, source identity, cache paths, and cross-platform lockfile drift. Fix-oriented searches followed Git workspace metadata, transitive Git path, and URL-normalization discussions. The fork contained only the new report plus unrelated xiangmaster/uv#1, which concerns proxy download concurrency. Upstream candidates astral-sh/uv#10988, astral-sh/uv#11312, astral-sh/uv#4317, astral-sh/uv#11090, astral-sh/uv#9301, and astral-sh/uv#14954 were inspected and ruled out as different behaviors. No exact duplicate or confirmed regression tracker was found."
+  },
+  "type": "bug",
+  "type_reason": "The report asserts an incorrect reproducibility result: the same project with a git+https workspace dependency produces different `uv lock` hashes across machines even with `--locked`. This is a correctness failure, not a request for new functionality. The missing lockfiles, reproduction, versions, and diff leave the mechanism and regression status unconfirmed.",
+  "summary": "No exact duplicate was found. The closest history concerns Git-workspace source identity in astral-sh/uv#8887 and astral-sh/uv#9388, machine-specific Git-checkout paths in astral-sh/uv#19152 and astral-sh/uv#19269, registry URL normalization in astral-sh/uv#13707 and astral-sh/uv#14245, and adjacent Git subdirectory hash updates in astral-sh/uv#14954.",
+  "draft_response": "Thanks for reporting this. Different `uv.lock` hashes for the same project and git+https workspace dependency would be incorrect, but the issue does not include the referenced lockfiles or enough information to determine the cause. Please provide a minimal public reproduction or the relevant `pyproject.toml` and lockfile sections, the exact command, `uv --version` and platform for each machine, and a lockfile diff. Please also indicate whether the Git dependency uses a branch, tag, or fixed revision. This will help distinguish a source-identity or checkout-path issue from a moving Git reference or environment difference."
+}
