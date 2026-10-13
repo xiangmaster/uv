@@ -1,0 +1,10 @@
+{
+  "related": {
+    "items": [],
+    "search_scope": "The report contains one observable claim: the title “Probe event trigger” and body “probe”; it provides no command, subsystem, triggering condition, version, platform, expected behavior, actual behavior, identifier, or error fragment. Literal searches in xiangmaster/uv for “probe” and “event trigger” were run against open and closed issues. Conceptual searches for trigger, automation, hook, dispatch, workflow, webhook, and CI were run against open and closed issues; semantic and hybrid searches for event-trigger/workflow-dispatch behavior were also run. The only conceptual match was xiangmaster/uv#3 because its body contains an attached CI log; it concerns workspace-member resolution, not event triggering. Open, closed, and merged pull-request searches for the literal and conceptual terms returned no results. Issues xiangmaster/uv#1, xiangmaster/uv#2, and xiangmaster/uv#3 were inspected, including comments and pull-request references; they have no comments or fixing references and were ruled out as unrelated. No meaningful related item was found."
+  },
+  "type": "question",
+  "type_reason": "The issue contains only the title “Probe event trigger” and body “probe.” It does not establish incorrect behavior, request a new capability, or ask a substantive support question. With no basis for bug, enhancement, or duplicate, question is the closest available classification pending a concrete report.",
+  "summary": "No meaningful related issue or pull request was found. xiangmaster/uv#4 is an unsubstantiated probe with no reproducible behavior, requested capability, command, environment, or error details.",
+  "draft_response": "There isn’t enough information in this issue to investigate it: the report currently contains only “probe.” Please add the expected and actual behavior, the command or workflow involved, reproduction steps, and relevant environment or error details. Once those details are available, we can determine whether this is a bug, feature request, or support question."
+}
